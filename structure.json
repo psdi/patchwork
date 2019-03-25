@@ -1,0 +1,18 @@
+{
+    "App": {
+        "dir": "src/",
+        "sub": {
+            "Controller": {
+                "dir": "Controller/",
+                "sub": {}
+            }
+        }
+    },
+    "Library": {
+        "dir": "public/",
+        "sub": {
+
+        }
+    }
+    
+}

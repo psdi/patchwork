@@ -1,0 +1,11 @@
+Options +FollowSymLinks
+DirectoryIndex index.php
+
+# enable apache rewrite engine
+RewriteEngine On
+
+# deliver the folder or file directly if it exists on the server
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+RewriteRule ^.*$ ./index.php

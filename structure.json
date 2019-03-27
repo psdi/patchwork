@@ -11,7 +11,14 @@
     "Library": {
         "dir": "public/",
         "sub": {
-
+            "Interfaces": {
+                "dir": "Interface/",
+                "sub": {}
+            },
+            "Object": {
+                "dir": "Object/",
+                "sub": {}
+            }
         }
     }
     

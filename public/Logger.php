@@ -2,6 +2,12 @@
 
 namespace Library;
 
+/**
+ * Loosely based on Katzgrau's Logger class
+ * https://github.com/katzgrau/KLogger/blob/master/src/Logger.php
+ * but with a few minor changes
+ */
+
 class Logger
 {
     /** @var string */

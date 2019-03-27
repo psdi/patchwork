@@ -11,4 +11,6 @@ $struct = json_decode(file_get_contents('structure.json'), true);
 \Library\Autoloader::setNamespaceMap($struct);
 spl_autoload_register('\Library\Autoloader::loader');
 
-$logger = new Library\Logger('data/logs/');
+// $logger = new Library\Logger('data/logs/');
+$req = new Library\Object\Request();
+var_dump($req->getServerParams());

@@ -1,5 +1,8 @@
 <?php
 
+require 'autoload.php';
+exit();
+
 require 'public/Autoloader.php';
 
 $things = 'hello';

@@ -63,9 +63,15 @@ class Logger
         $this->fileHandle = fopen($this->logFilePath, $writeMode);
     }
 
-    public function write($class = '', $method = '', $key = '', $message = '', $context = '')
+    public function write($class = '', $method = '', $key = '', $message = '', $context = [])
     {
-
+        $line = (new \DateTime())->format('Y-m-d H:i:s') . "\t$key\t$message\t";
+        $line .= $class . '::' . $method . "\t { ";
+        foreach ($context as $key => $value) {
+            $line .= "$key: $value, ";
+        }
+        $line .= "}\n";
+        fwrite($this->fileHandle, $line);
     }
 
     public function __destruct()

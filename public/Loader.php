@@ -29,7 +29,7 @@ class Loader
      * stack instead of appending it; this way, it is searched (and compared) first
      * @return void
      */
-    public function addNamespace($prefix, $baseDir, $prepend = false)
+    public function addNamespace($prefix, $baseDir, $prepend = false) : void
     {
         $prefix = trim($prefix, '\\') . '\\';
         $baseDir = rtrim($baseDir, DIRECTORY_SEPARATOR) . '/';
@@ -43,15 +43,32 @@ class Loader
         }
     }
 
+    /**
+     * Accept an array of namespace/folder maps
+     *
+     * @param array $map
+     */
+    public function addNamespaceMap(array $map = []) : void
+    {
+        foreach ($map as $namespace => $dir) {
+            $this->addNamespace($namespace, $dir);
+        }
+    }
+
     public function getPrefixes()
     {
         return $this->prefixes;
     }
 
     /**
-     * Loads class name for a given class name
+     * Loads class file for a given class name
      */
-    public function loadClass() {}
+    public function loadClass($class)
+    {
+        
+
+        return false;
+    }
 
     /**
      * If a file exists, require it and return true.

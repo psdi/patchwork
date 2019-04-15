@@ -65,7 +65,50 @@ class Loader
      */
     public function loadClass($class)
     {
-        
+        $prefix = $class;
+
+        while (false !== $pos = strrpos($prefix, '\\')) {
+            // retain trailing namespace separator in prefix
+            $prefix = substr($prefix, 0, $pos + 1);
+            // the rest is the relative class name
+            $relativeClass = substr($class, $pos + 1);
+
+            $mappedFile = $this->loadMappedFile($prefix, $relativeClass);
+            if ($mappedFile) {
+                return $mappedFile;
+            }
+
+            // remove trailing namespace separator for the next iteration
+            $prefix = rtrim($prefix, '\\');
+        }
+
+        return false;
+    }
+
+    /**
+     * Load mapped file
+     *
+     * @param string $prefix
+     * @param string $relativeClass
+     * @return string|bool
+     */
+    public function loadMappedFile($prefix, $relativeClass)
+    {
+        // check if prefix key exists
+        if (!isset($this->prefixes[$prefix])) {
+            return false;
+        }
+
+        // look through assigned base directories for this namespace prefix
+        foreach ($this->prefixes[$prefix] as $baseDir) {
+            $file = $baseDir
+                . str_replace('\\', '/', $relativeClass)
+                . '.php';
+
+            if ($this->requireFile($file)) {
+                return $file;
+            }
+        }
 
         return false;
     }

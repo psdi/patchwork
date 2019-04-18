@@ -41,12 +41,12 @@ class Logger
     {
         if ($this->options['filename']) {
             if (strpos($this->options['filename'], '.log') !== false || strpos($this->options['filename'], '.txt')) {
-                $this->logFilePath = $logDirectory . DIRECTORY_SEPARATOR . $this->options['filename'];
+                $this->logFilePath = $logDirectory . '/' . $this->options['filename'];
             } else {
-                $this->logFilePath = $logDirectory . DIRECTORY_SEPARATOR . $this->options['filename'] . $this->options['extension'];
+                $this->logFilePath = $logDirectory . '/' . $this->options['filename'] . $this->options['extension'];
             }
         } else {
-            $this->logFilePath = $logDirectory . DIRECTORY_SEPARATOR . $this->options['prefix'] . \date('Y-m-d') . $this->options['extension'];
+            $this->logFilePath = $logDirectory . '/' . $this->options['prefix'] . \date('Y-m-d') . $this->options['extension'];
         }
     }
 

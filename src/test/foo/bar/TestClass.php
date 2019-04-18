@@ -4,7 +4,7 @@ namespace Test\Foo\Bar;
 
 class TestClass
 {
-    public function __construct()
+    public function sayHello()
     {
         echo 'Hello';
     }

@@ -15,6 +15,18 @@ class Autoloader
      */
     protected $prefixes = [];
 
+    /** 
+     * Path leading to src/ folder
+     * 
+     * @var string
+     * */
+    protected $frameworkPath = '';
+
+    public function __construct($frameworkPath)
+    {
+        $this->frameworkPath = $frameworkPath;
+    }
+
     public function register()
     {
         spl_autoload_register([$this, 'loadClass']);
@@ -32,7 +44,7 @@ class Autoloader
     public function addNamespace($prefix, $baseDir, $prepend = false) : void
     {
         $prefix = trim($prefix, '\\') . '\\';
-        $baseDir = rtrim($baseDir, DIRECTORY_SEPARATOR) . '/';
+        $baseDir = rtrim($baseDir, '/') . '/';
         if (!isset($this->prefixes[$prefix])) {
             $this->prefixes[$prefix] = [];
         }
@@ -101,7 +113,8 @@ class Autoloader
 
         // look through assigned base directories for this namespace prefix
         foreach ($this->prefixes[$prefix] as $baseDir) {
-            $file = $baseDir
+            $file = $this->frameworkPath 
+                . $baseDir
                 . str_replace('\\', '/', $relativeClass)
                 . '.php';
 

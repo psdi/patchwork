@@ -1,6 +1,8 @@
 <?php
+declare(strict_types=1);
 
-require 'autoload.php';
+require dirname(__DIR__, 1) . '/src/autoload.php';
+
 exit();
 
 require 'public/Autoloader.php';

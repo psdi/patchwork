@@ -1,0 +1,1 @@
+2019-04-18 20:12:02	success	I did it! Or rather, I implemented a thing that was already given in the interwebs haha	::	 { }

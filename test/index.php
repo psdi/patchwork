@@ -3,19 +3,9 @@ declare(strict_types=1);
 
 require dirname(__DIR__, 1) . '/src/autoload.php';
 
-exit();
+// test
+$logger = new Library\Logger(dirname(__DIR__, 1) . '/test/data/logs');
+$logger->write(__CLASS__, __METHOD__, 'new entry', 'ello, just moved some stuff');
 
-require 'public/Autoloader.php';
-
-$things = 'hello';
-echo (require 'config/routes.php')($things);
-
-echo '<pre>';
-$struct = json_decode(file_get_contents('structure.json'), true);
-\Library\Autoloader::setRoot(__DIR__);
-\Library\Autoloader::setNamespaceMap($struct);
-spl_autoload_register('\Library\Autoloader::loader');
-
-// $logger = new Library\Logger('data/logs/');
-$req = new Library\Object\Request();
-var_dump($req->getServerParams());
+$testClass = new Test\Foo\Bar\TestClass();
+$testClass->sayHello();

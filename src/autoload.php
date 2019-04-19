@@ -8,8 +8,8 @@ $loader = new Library\Autoloader($frameworkPath);
 $loader->addNamespace('Library', 'lib/');
 
 $loader->addNamespaceGroup('Test', 'test/', function (Library\Autoloader $a) {
-    $a->addNamespace('Foo\\Bar', 'foo/bar/');
-    $a->addNamespace('Baz', 'baz/');
+    $a->addNamespace('Foo\\Bar\\', 'foo/bar/');
+    $a->addNamespace('Baz\\', 'baz/');
 });
 
 $loader->register();

@@ -9,3 +9,6 @@ $logger->write(__CLASS__, __METHOD__, 'new entry', 'ello, just moved some stuff'
 
 $testClass = new Test\Foo\Bar\TestClass();
 $testClass->sayHello();
+
+$randomizer = new Test\Baz\Randomizer();
+echo $randomizer->random();

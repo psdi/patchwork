@@ -3,8 +3,8 @@
 Da die andere Datei gelöscht ist, muss ich halt von vorne wieder anfangen.
 
 ### Ziele / Offene Vorgänge:
-- [ ] commit -m "update goals" (huhu)
-- [ ] place autoload somewhere else
+- [X] commit -m "update goals" (huhu)
+- [X] place autoload somewhere else
 - [ ] Request/Response - message - brauchst du (noch) nicht
 - [ ] Routing implementieren
     - [ ] Arbeit mit Controllern und Views
@@ -21,7 +21,7 @@ Da die andere Datei gelöscht ist, muss ich halt von vorne wieder anfangen.
 - Autoloader: autoload.php
 
 ### Quellenangaben:
-- FastRoute
-- PSR-4 Autoloader
-- Logger Zeug (zitieren!)
+- [FastRoute](https://github.com/nikic/FastRoute)
+- [PSR-4 Autoloader](https://www.php-fig.org/psr/psr-4/examples/)
+- [Logger](https://github.com/katzgrau/KLogger/blob/master/src/Logger.php)
 - [Project Structure](https://blog.nikolaposa.in.rs/2017/01/16/on-structuring-php-projects/)

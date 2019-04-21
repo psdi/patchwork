@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 require dirname(__DIR__, 1) . '/src/autoload.php';
+require dirname(__DIR__, 1) . '/config/routes.php';
+exit();
 
 // test
 $logger = new Library\Logger(dirname(__DIR__, 1) . '/test/data/logs');

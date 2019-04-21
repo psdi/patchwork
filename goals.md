@@ -8,6 +8,8 @@ Da die andere Datei gelöscht ist, muss ich halt von vorne wieder anfangen.
 - [ ] Request/Response - message - brauchst du (noch) nicht
 - [ ] Routing implementieren
     - [ ] Arbeit mit Controllern und Views
+- [ ] Autoload-3: what about autoloading your framework classes? there should be a second autoload.php file
+- [ ] PDO Manager (interface!)
 - [ ] Template Engine
 - [ ] Database
 - [ ] Interfaces?

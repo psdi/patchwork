@@ -1,14 +1,14 @@
 Options +FollowSymLinks -Indexes -MultiViews
-DirectoryIndex index.php
+# DirectoryIndex index.php
 
 # enable apache rewrite engine
 RewriteEngine On
 
 # write a comment
-RewriteBase /patchwork/
+# RewriteBase /patchwork/
 
 # deliver the folder or file directly if it exists on the server
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 
-RewriteRule ^(.+)$ ./test/index.php?uri=$1 [QSA,L]
+RewriteRule ^(.+)$ ./test/index.php?uri=$1 [QSA,L,END]

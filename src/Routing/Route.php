@@ -4,14 +4,14 @@ namespace Routing;
 
 class Route
 {
-    public $patterns = '';
+    public $pattern = '';
     public $httpMethod = '';
     public $callable = '';
     public $params = [];
 
-    public function __construct($patterns, $httpMethod, $callable, $params = [])
+    public function __construct($pattern, $httpMethod, $callable, $params = [])
     {
-        $this->patterns = $patterns;
+        $this->pattern = $pattern;
         $this->httpMethod = $httpMethod;
         $this->callable = $callable;
         $this->params = $params;    
@@ -19,6 +19,8 @@ class Route
 
     public function compare($pattern)
     {
+        $regex = '~^' . $this->pattern . '$~';
+        return (bool) preg_match($regex, $pattern);
         // compare using regex if request URI pattern
         // matches with Route->uri
     }

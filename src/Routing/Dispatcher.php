@@ -5,24 +5,57 @@ namespace Routing;
 class Dispatcher
 {
     /** @var RouteCollector */
-    public $routeCollector;
+    private $routeCollector;
+    /** @var array */
+    private $get;
+    /** @var array */
+    private $post;
+    /** @var string */
+    private $httpMethod;
+    /** @var string */
+    private $requestUri;
+
+    public function __construct(RouteCollector $collector)
+    {
+        $this->routeCollector = $collector;
+    }
 
     /**
      * Accepts a request and returns 
      */
-    public function processRequest($request)
+    public function processRequest($httpMethod, $requestUri, $get = [], $post = [])
     {
-        // https://stackoverflow.com/questions/20323382/representation-part-in-a-rmr-architecture
-        // https://github.com/bramus/router
-        // https://codereview.stackexchange.com/questions/175419/php-routing-with-mvc-structure
-        //  - in übergebene Funktion schauen - interessant?
-        // auch interessant: https://stackoverflow.com/questions/12430181/how-does-mvc-routing-work
-        // save this somewhere: https://restful-api-design.readthedocs.io/en/latest/resources.html
+        $this->httpMethod = $httpMethod;
+        $this->requestUri = $requestUri;
+        $this->get = $get;
+        $this->post = $post;
     }
 
-    public function addRoute($httpMethod, $uri, $closure, $params)
+    public function addRoute($pattern, $httpMethod, $callable, $params = [])
     {
-        
+        $this->routeCollector->addRoute($this->createRoute($pattern, $httpMethod, $callable, $params));
+    }
+
+    public function get($pattern, $callable, $params = [])
+    {
+        $this->addRoute($pattern, 'GET', $callable, $params);
+    }
+
+    public function post($pattern, $callable, $params = [])
+    {
+        $this->addRoute($pattern, 'POST', $callable, $params);
+    }
+
+    public function createRoute($pattern, $httpMethod, $callable, $params = [])
+    {
+        return new Route($pattern, $httpMethod, $callable, $params);
+    }
+
+    public function run()
+    {
+        if ($this->routeCollector) {
+            $this->routeCollector->checkExistingRoutes($this->requestUri);
+        }
     }
 
 }

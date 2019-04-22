@@ -4,14 +4,14 @@ namespace Routing;
 
 class Route
 {
-    public $uri = '';
+    public $patterns = '';
     public $httpMethod = '';
     public $callable = '';
     public $params = [];
 
-    public function __construct($uri, $httpMethod, $callable, $params = [])
+    public function __construct($patterns, $httpMethod, $callable, $params = [])
     {
-        $this->uri = $uri;
+        $this->patterns = $patterns;
         $this->httpMethod = $httpMethod;
         $this->callable = $callable;
         $this->params = $params;    

@@ -16,11 +16,11 @@ class Autoloader
     protected $prefixes = [];
 
     /** 
-     * Path leading to src/ folder
+     * Absolute paths to check in (e.g. for framework and project paths)
      * 
-     * @var string
+     * @var array
      * */
-    protected $frameworkPath = '';
+    protected $absolutePaths = [];
 
     /**
      * Relevant for addNamespaceGroup
@@ -36,9 +36,9 @@ class Autoloader
      */
     protected $groupBaseDirPrefix = '';
 
-    public function __construct($frameworkPath)
+    public function __construct(...$absolutePaths)
     {
-        $this->frameworkPath = $frameworkPath;
+        $this->absolutePaths = $absolutePaths;
     }
 
     public function register()
@@ -141,13 +141,12 @@ class Autoloader
 
         // look through assigned base directories for this namespace prefix
         foreach ($this->prefixes[$prefix] as $baseDir) {
-            $file = $this->frameworkPath 
-                . $baseDir
-                . str_replace('\\', '/', $relativeClass)
-                . '.php';
+            foreach ($this->absolutePaths as $absPath) {
+                $file = $absPath . $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
 
-            if ($this->requireFile($file)) {
-                return $file;
+                if ($this->requireFile($file)) {
+                    return $file;
+                }
             }
         }
 

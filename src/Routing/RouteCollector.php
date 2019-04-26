@@ -13,7 +13,7 @@ class RouteCollector
         foreach ($this->routes as $route) {
             if ($route->compare($pattern)) {
                 $found = true;
-                ($route->callable)();
+                ($route->callable)(''); // todo: how do I isolate a parameter um I SHOULD CREATE A REQUEST
             }
         }
         if (!$found) {
@@ -27,4 +27,5 @@ class RouteCollector
     {
         $this->routes[] = $route;
     }
+    
 }

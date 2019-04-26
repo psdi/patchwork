@@ -41,12 +41,12 @@ class Logger
     {
         if ($this->options['filename']) {
             if (strpos($this->options['filename'], '.log') !== false || strpos($this->options['filename'], '.txt')) {
-                $this->logFilePath = $logDirectory . DIRECTORY_SEPARATOR . $this->options['filename'];
+                $this->logFilePath = $logDirectory . '/' . $this->options['filename'];
             } else {
-                $this->logFilePath = $logDirectory . DIRECTORY_SEPARATOR . $this->options['filename'] . $this->options['extension'];
+                $this->logFilePath = $logDirectory . '/' . $this->options['filename'] . $this->options['extension'];
             }
         } else {
-            $this->logFilePath = $logDirectory . DIRECTORY_SEPARATOR . $this->options['prefix'] . \date('Y-m-d') . $this->options['extension'];
+            $this->logFilePath = $logDirectory . '/' . $this->options['prefix'] . \date('Y-m-d') . $this->options['extension'];
         }
     }
 
@@ -63,9 +63,15 @@ class Logger
         $this->fileHandle = fopen($this->logFilePath, $writeMode);
     }
 
-    public function write($class = '', $method = '', $key = '', $message = '', $context = '')
+    public function write($class = '', $method = '', $key = '', $message = '', $context = [])
     {
-
+        $line = (new \DateTime())->format('Y-m-d H:i:s') . "\t$key\t$message\t";
+        $line .= $class . '::' . $method . "\t { ";
+        foreach ($context as $key => $value) {
+            $line .= "$key: $value, ";
+        }
+        $line .= "}\n";
+        fwrite($this->fileHandle, $line);
     }
 
     public function __destruct()

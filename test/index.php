@@ -2,8 +2,11 @@
 declare(strict_types=1);
 
 require dirname(__DIR__, 1) . '/src/autoload.php';
-require dirname(__DIR__, 1) . '/config/routes.php';
+
+$request = new Http\Request();
+// todo: pass Request to Router
 exit();
+require dirname(__DIR__, 1) . '/config/routes.php';
 
 // test
 $logger = new Library\Logger(dirname(__DIR__, 1) . '/test/data/logs');

@@ -9,6 +9,7 @@ $loader = new Library\Autoloader($frameworkPath, $projectPath);
 
 $loader->addNamespace('Library', 'lib/');
 $loader->addNamespace('Routing', 'routing/');
+$loader->addNamespace('Http', 'http/');
 
 $loader->addNamespaceGroup('Test', 'test/', function (Library\Autoloader $a) {
     $a->addNamespace('Foo\\Bar\\', 'foo/bar/');

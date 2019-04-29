@@ -21,8 +21,5 @@ class Route
     {
         $regex = '~^' . $this->pattern . '$~';
         return (bool) preg_match($regex, $pattern);
-        // compare using regex if request URI pattern
-        // matches with Route->uri
     }
-
 }

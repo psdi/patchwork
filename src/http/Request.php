@@ -4,7 +4,9 @@ namespace Http;
 
 class Request
 {
-    private $uri;
+    /** @var string $requestUri */
+    private $requestUri;
+    /** @var string $httpMethod */
     private $httpMethod;
     /** @var array $params */
     private $params = [];
@@ -17,7 +19,7 @@ class Request
     public function __construct()
     {
         $this->setHttpMethod($_SERVER['REQUEST_METHOD']);
-        $this->setUriComponents($_SERVER['REQUEST_URI']);
+        $this->setRequestUri($_SERVER['REQUEST_URI']);
     }
 
     protected function setHttpMethod($httpMethod)
@@ -28,11 +30,9 @@ class Request
         $this->httpMethod = $httpMethod;
     }
 
-    protected function setUriComponents($requestUri)
+    protected function setRequestUri($requestUri)
     {
-        $uriComponents = parse_url($requestUri);
-
-        //todo
+        $this->requestUri = $requestUri;
     }
 
     protected function setParam($key, $value)
@@ -40,9 +40,9 @@ class Request
         $this->params[$key] = $value;
     }
 
-    public function getUri()
+    public function getRequestUri()
     {
-        return $this->uri;
+        return $this->requestUri;
     }
 
     public function getHttpMethod()

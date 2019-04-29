@@ -1,16 +1,13 @@
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__, 1) . '/src/autoload.php';
-
+$mainPath = dirname(__DIR__);
+require $mainPath . '/src/autoload.php';
 $request = new Http\Request();
-// todo: pass Request to Router
+$router = (require $mainPath . '/config/routes.php')($request);
 exit();
-require dirname(__DIR__, 1) . '/config/routes.php';
 
-// test
-$logger = new Library\Logger(dirname(__DIR__, 1) . '/test/data/logs');
-$logger->write(__CLASS__, __METHOD__, 'new entry', 'ello, just moved some stuff');
+$logger = new Library\Logger($mainPath . '/test/data/logs');
 
 $testClass = new Test\Foo\Bar\TestClass();
 $testClass->sayHello();

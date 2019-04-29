@@ -1,15 +1,14 @@
 <?php
 
-use Routing\Dispatcher;
-use Routing\RouteCollector;
+use Routing\Router;
+use Http\Request;
 
-$httpMethod = $_SERVER['REQUEST_METHOD'];
-$uri = rtrim($_SERVER['REQUEST_URI'], '/');
-$dispatcher = new Dispatcher(new RouteCollector());
-$dispatcher->processRequest($httpMethod, $uri, $_GET, $_POST);
+return function (Request $request) {
+    $router = new Router($request);
 
-$dispatcher->addRoute('/hello', 'GET', function() {
-    echo 'Hello!';
-});
+    $router->addRoute('/hello', 'GET', function() {
+        echo 'Hello!';
+    });
 
-$dispatcher->run();
+    return $router;
+};

@@ -8,8 +8,14 @@ class Request
     private $requestUri;
     /** @var string $httpMethod */
     private $httpMethod;
+    /** @var string $controller */
+    private $controller;
+    /** @var string $action */
+    private $action;
     /** @var array $params */
     private $params = [];
+    /** @var callable $callable */
+    private $callable = null;
 
     const SUPPORTED_METHODS = [
         'GET',
@@ -22,6 +28,21 @@ class Request
         $this->setRequestUri($_SERVER['REQUEST_URI']);
     }
 
+    public function getRequestUri()
+    {
+        return $this->requestUri ?? '';
+    }
+
+    protected function setRequestUri($requestUri)
+    {
+        $this->requestUri = $requestUri;
+    }
+
+    public function getHttpMethod()
+    {
+        return $this->httpMethod ?? '';
+    }
+
     protected function setHttpMethod($httpMethod)
     {
         if (!in_array($httpMethod, self::SUPPORTED_METHODS)) {
@@ -30,24 +51,23 @@ class Request
         $this->httpMethod = $httpMethod;
     }
 
-    protected function setRequestUri($requestUri)
+    public function getController()
     {
-        $this->requestUri = $requestUri;
+        return $this->controller ?? '';
     }
 
-    protected function setParam($key, $value)
+    public function getAction()
     {
-        $this->params[$key] = $value;
+        return $this->action ?? '';
     }
 
-    public function getRequestUri()
+    public function setHandler(array $handler)
     {
-        return $this->requestUri;
-    }
-
-    public function getHttpMethod()
-    {
-        return $this->httpMethod;
+        $controller = (strpos($handler[0], 'Controller') !== false) ? $handler[0] : 'ErrorController';
+        // todo: create ErrorController
+        $action = (strpos($handler[1], 'Action') !== false) ? $handler[1] : 'throwAction';
+        $this->controller = $controller;
+        $this->action = $action;
     }
 
     public function getParam($key)
@@ -58,8 +78,25 @@ class Request
         return $this->params[$key];
     }
 
+    protected function setParam($key, $value)
+    {
+        $this->params[$key] = $value;
+    }
+
     public function getAllParams()
     {
         return $this->params;
+    }
+
+    public function getCallable()
+    {
+        return $this->callable;
+    }
+
+    public function setCallable($callable)
+    {
+        if (is_callable($callable)) {
+            $this->callable = $callable;
+        }
     }
 }

@@ -18,4 +18,6 @@ $loader->addNamespaceGroup('Test', 'test/', function (Library\Autoloader $a) {
 
 $loader->addNamespace('App', 'app/');
 
+$loader->addNamespace('Controllers', 'controllers/');
+
 $loader->register();

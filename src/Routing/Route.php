@@ -6,14 +6,27 @@ class Route
 {
     public $pattern = '';
     public $httpMethod = '';
-    public $callable = '';
+    public $callable = null;
+    public $handler = [];
     public $params = [];
 
-    public function __construct($pattern, $httpMethod, $callable, $params = [])
+    /**
+     * Route constructor - accepts either a handler or an anonymous function
+     * 
+     * @var string $pattern
+     * @var string $httpMethod
+     * @var callable|array $handler
+     * @var array $params
+     */
+    public function __construct($pattern, $httpMethod, $handler, $params = [])
     {
         $this->pattern = $pattern;
         $this->httpMethod = $httpMethod;
-        $this->callable = $callable;
+        if (is_callable($handler)) {
+            $this->callable = $handler;
+        } else if (is_array($handler)) {
+            $this->handler = $handler;
+        }
         $this->params = $params;    
     }
 

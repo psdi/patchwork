@@ -25,7 +25,7 @@ class Request
     public function __construct()
     {
         $this->setHttpMethod($_SERVER['REQUEST_METHOD']);
-        $this->setRequestUri($_SERVER['REQUEST_URI']);
+        $this->setRequestUri(rtrim($_SERVER['REQUEST_URI'], '/'));
     }
 
     public function getRequestUri()
@@ -73,12 +73,12 @@ class Request
     public function getParam($key)
     {
         if (!isset($this->params[$key])) {
-            throw new \InvalidArgumentException('The request key ' . $key . ' does not exist.');
+            throw new \InvalidArgumentException('The requested key ' . $key . ' does not exist.');
         }
         return $this->params[$key];
     }
 
-    protected function setParam($key, $value)
+    public function setParam($key, $value)
     {
         $this->params[$key] = $value;
     }

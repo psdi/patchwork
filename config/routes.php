@@ -6,8 +6,11 @@ use Http\Request;
 return function (Request $request) {
     $router = new Router($request);
 
-    $router->addRoute('/hello/:lang', 'GET', [ 'Controllers\TestController', 'returnAction' ], [
-        'required' => [ 'lang' => '\w+' ],
+    $router->addRoute('/hello/:lang/:num', 'GET', [ 'Controllers\TestController', 'returnAction' ], [
+        'required' => [
+            'lang' => '\w+',
+            'num' => '\d+',
+        ],
         // 'default' => [ 'lang' => 'en' ],
     ]);
 

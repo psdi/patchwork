@@ -22,10 +22,17 @@ class Dispatcher
         if ($this->request->getCallable() !== null) {
             // todo: run with parameters
         } else if ($this->request->getController() && $this->request->getAction()) {
-            $controller = $this->request->getController();
+            $controllerClass = $this->request->getController();
             $action = $this->request->getAction(); // todo: optimize this cheat
-            $test = new $controller();
-            $test->$action();
+            $controller = new $controllerClass();
+            $params = $this->request->getAllParams();
+            call_user_func_array(
+                [
+                    $controller,
+                    $action
+                ],
+                $params
+            );
             // todo: run with parameters
         }
     }    

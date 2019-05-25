@@ -9,7 +9,7 @@ class Router
     /** @var Request $request */
     private $request;
     /** @var Route[] $routes */
-    private $routes;
+    private $routes = [];
 
     public function __construct(Request $request)
     {
@@ -27,8 +27,10 @@ class Router
 
         $requestUri = $this->request->getRequestUri();
         $handler = [];
+        $routeMatch = '';
         foreach ($this->routes as $route) {
             if ($route->compare($requestUri)) {
+                $routeMatch = $route;
                 $handler = $route->handler ? $route->handler : $route->callable;
             }
         }
@@ -41,6 +43,40 @@ class Router
             $this->request->setCallable($handler);
         } else {
             // todo: throw new exception
+        }
+
+        //todo (later): handle all types of urls
+
+        if ($routeMatch) {
+            if (count($routeMatch->params) && key_exists('required', $routeMatch->params)) {
+                $params = array_keys($routeMatch->params['required']);
+                $url = $this->request->getRequestUri();
+                $route = $routeMatch->routeWithParams;
+                $limit = 0;
+
+                do {
+                    $url = ltrim($url, '/');
+                    $route = ltrim($route, '/');
+                    $urlFragment = substr($url, 0, strpos($url, '/') ?: strlen($url));   //don't you have a better var name
+                    $routeFragment = substr($route, 0, strpos($route, '/') ?: strlen($route));
+
+                    if (in_array(ltrim($routeFragment, ':'), $params)) {
+                        $paramName = ltrim($routeFragment, ':');
+                        $paramRegex = $routeMatch->params['required'][$paramName];
+                        if (preg_match('~^' . $paramRegex . '$~', $urlFragment)) {
+                            $this->request->setParam(
+                                $paramName,
+                                $urlFragment
+                            );
+                        }
+                    }
+
+                    $url = substr($url, strlen($urlFragment));
+                    $route = substr($route, strlen($routeFragment));
+                    $limit++;
+                } while ((false !== strpos($url, '/')) && $limit < 8);
+                // while or do while?
+            }
         }
     }
 
@@ -61,18 +97,16 @@ class Router
         }
 
         return $pattern;
-
-        // notes: in processRequest, idk check against patterns and stuff
     }
 
-    public function addRoute($pattern, $httpMethod, $handler, $params = [])
+    public function addRoute($routeWithParams, $httpMethod, $handler, $params = [])
     {
-        $pattern = $this->createRegexPattern($pattern, $params);
+        $regexPattern = $this->createRegexPattern($routeWithParams, $params);
         if (count($handler) !== 2) {
-            // todo: throw exception or something
+            // todo: throw exception
         }
         // todo: check if route already exists
-        $this->routes[] = $this->createRoute($pattern, $httpMethod, $handler, $params);
+        $this->routes[] = $this->createRoute($regexPattern, $httpMethod, $handler, $params, $routeWithParams);
     }
 
     public function get($pattern, $handler, $params = [])
@@ -85,9 +119,9 @@ class Router
         $this->addRoute($pattern, 'POST', $handler, $params);
     }
 
-    public function createRoute($pattern, $httpMethod, $handler, $params = [])
+    public function createRoute($regexPattern, $httpMethod, $handler, $params = [], $routeWithParams)
     {
-        return new Route($pattern, $httpMethod, $handler, $params);
+        return new Route($regexPattern, $httpMethod, $handler, $params, $routeWithParams);
     }
 
     public function getRequest()

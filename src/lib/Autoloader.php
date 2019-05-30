@@ -16,15 +16,29 @@ class Autoloader
     protected $prefixes = [];
 
     /** 
-     * Path leading to src/ folder
+     * Absolute paths to check in (e.g. for framework and project paths)
+     * 
+     * @var array
+     * */
+    protected $absolutePaths = [];
+
+    /**
+     * Relevant for addNamespaceGroup
      * 
      * @var string
-     * */
-    protected $frameworkPath = '';
+     */
+    protected $groupNamespacePrefix = '';
 
-    public function __construct($frameworkPath)
+    /**
+     * Relevant for addNamespaceGroup
+     * 
+     * @var string
+     */
+    protected $groupBaseDirPrefix = '';
+
+    public function __construct(...$absolutePaths)
     {
-        $this->frameworkPath = $frameworkPath;
+        $this->absolutePaths = $absolutePaths;
     }
 
     public function register()
@@ -43,8 +57,8 @@ class Autoloader
      */
     public function addNamespace($prefix, $baseDir, $prepend = false) : void
     {
-        $prefix = trim($prefix, '\\') . '\\';
-        $baseDir = rtrim($baseDir, '/') . '/';
+        $prefix = $this->groupNamespacePrefix . trim($prefix, '\\') . '\\';
+        $baseDir = $this->groupBaseDirPrefix . rtrim($baseDir, '/') . '/';
         if (!isset($this->prefixes[$prefix])) {
             $this->prefixes[$prefix] = [];
         }
@@ -65,6 +79,20 @@ class Autoloader
         foreach ($map as $namespace => $dir) {
             $this->addNamespace($namespace, $dir);
         }
+    }
+
+    /**
+     * Similar to addNamespaceMap(), just in nested form
+     */
+    public function addNamespaceGroup($prefix, $baseDir, $callable)
+    {
+        $prevNamespacePrefix = $this->groupNamespacePrefix;
+        $prevBaseDirPrefix = $this->groupBaseDirPrefix;
+        $this->groupNamespacePrefix = rtrim($prefix, '\\') . '\\';
+        $this->groupBaseDirPrefix = rtrim($baseDir, '/') . '/';
+        $callable($this);
+        $this->groupNamespacePrefix = $prevNamespacePrefix;
+        $this->groupBaseDirPrefix = $prevBaseDirPrefix;
     }
 
     public function getPrefixes()
@@ -113,13 +141,12 @@ class Autoloader
 
         // look through assigned base directories for this namespace prefix
         foreach ($this->prefixes[$prefix] as $baseDir) {
-            $file = $this->frameworkPath 
-                . $baseDir
-                . str_replace('\\', '/', $relativeClass)
-                . '.php';
+            foreach ($this->absolutePaths as $absPath) {
+                $file = $absPath . $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
 
-            if ($this->requireFile($file)) {
-                return $file;
+                if ($this->requireFile($file)) {
+                    return $file;
+                }
             }
         }
 

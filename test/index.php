@@ -1,21 +1,13 @@
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__, 1) . '/src/autoload.php';
+$mainPath = dirname(__DIR__);
+require $mainPath . '/src/autoload.php';
+$request = new Http\Request();
+$router = (require $mainPath . '/config/routes.php')($request);
+$dispatcher = new Routing\Dispatcher($router);
+$dispatcher->dispatch();
 
 exit();
 
-require 'public/Autoloader.php';
-
-$things = 'hello';
-echo (require 'config/routes.php')($things);
-
-echo '<pre>';
-$struct = json_decode(file_get_contents('structure.json'), true);
-\Library\Autoloader::setRoot(__DIR__);
-\Library\Autoloader::setNamespaceMap($struct);
-spl_autoload_register('\Library\Autoloader::loader');
-
-// $logger = new Library\Logger('data/logs/');
-$req = new Library\Object\Request();
-var_dump($req->getServerParams());
+$logger = new Library\Logger($mainPath . '/test/data/logs');

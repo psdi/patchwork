@@ -36,28 +36,30 @@ class Router
         }
 
         // note: is_array is tested first because arrays with callable
-        // class/method combinations are somehow considered callables
-        if (is_array($handler)) {
+        // class/method combinations are also considered callables
+        if (!empty($handler) && is_array($handler)) {
             $this->request->setHandler($handler);
         } else if (is_callable($handler)) {
             $this->request->setCallable($handler);
         } else {
-            // todo: throw new exception
+            throw new \ErrorException('Passed callable cannot be processed.');
         }
 
         //todo (later): handle all types of urls
 
-        if ($routeMatch) {
+        if (!$routeMatch) {
+            throw new \ErrorException('No controller found - optimize this thrown error!', 404);
+        } else {
             if (count($routeMatch->params) && key_exists('required', $routeMatch->params)) {
                 $params = array_keys($routeMatch->params['required']);
                 $url = $this->request->getRequestUri();
                 $route = $routeMatch->routeWithParams;
                 $limit = 0;
 
-                do {
+                while ((false !== strpos($url, '/')) && $limit < 8) {
                     $url = ltrim($url, '/');
                     $route = ltrim($route, '/');
-                    $urlFragment = substr($url, 0, strpos($url, '/') ?: strlen($url));   //don't you have a better var name
+                    $urlFragment = substr($url, 0, strpos($url, '/') ?: strlen($url));
                     $routeFragment = substr($route, 0, strpos($route, '/') ?: strlen($route));
 
                     if (in_array(ltrim($routeFragment, ':'), $params)) {
@@ -74,8 +76,7 @@ class Router
                     $url = substr($url, strlen($urlFragment));
                     $route = substr($route, strlen($routeFragment));
                     $limit++;
-                } while ((false !== strpos($url, '/')) && $limit < 8);
-                // while or do while?
+                }
             }
         }
     }
@@ -102,10 +103,11 @@ class Router
     public function addRoute($routeWithParams, $httpMethod, $handler, $params = [])
     {
         $regexPattern = $this->createRegexPattern($routeWithParams, $params);
-        if (count($handler) !== 2) {
-            // todo: throw exception
+        foreach ($this->routes as $route) {
+            if ($route->regexPattern === $regexPattern || $route->routeWithParams === $routeWithParams) {
+                throw new \InvalidArgumentException('Route with path ' . $routeWithParams . ' already exists.');
+            }
         }
-        // todo: check if route already exists
         $this->routes[] = $this->createRoute($regexPattern, $httpMethod, $handler, $params, $routeWithParams);
     }
 

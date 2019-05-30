@@ -23,8 +23,8 @@ class Dispatcher
             // todo: run with parameters
         } else if ($this->request->getController() && $this->request->getAction()) {
             $controllerClass = $this->request->getController();
-            $action = $this->request->getAction(); // todo: optimize this cheat
-            $controller = new $controllerClass();
+            $action = $this->request->getAction();
+            $controller = new $controllerClass($this);
             $params = $this->request->getAllParams();
             call_user_func_array(
                 [
@@ -33,7 +33,20 @@ class Dispatcher
                 ],
                 $params
             );
-            // todo: run with parameters
         }
-    }    
+    }
+    
+    /**
+     * Return a requested parameter
+     * 
+     * @var string $name The parameter name
+     * @return mixed|null
+     */
+    public function getParam(string $name)
+    {
+        if ($this->request->getParam($name)) {
+            return $this->request->getParam($name);
+        }
+        return null;
+    }
 }

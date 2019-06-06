@@ -4,18 +4,14 @@ namespace Http;
 
 class Request
 {
-    /** @var string $requestUri */
+    /** @var string */
     private $requestUri;
-    /** @var string $httpMethod */
+    /** @var string */
     private $httpMethod;
-    /** @var string $controller */
-    private $controller;
-    /** @var string $action */
-    private $action;
-    /** @var array $params */
+    /** @var callable|callable[]|\Closure */
+    private $handler;
+    /** @var mixed[] */
     private $params = [];
-    /** @var callable $callable */
-    private $callable = null;
 
     const SUPPORTED_METHODS = [
         'GET',
@@ -51,23 +47,15 @@ class Request
         $this->httpMethod = $httpMethod;
     }
 
-    public function getController()
+    public function getHandler()
     {
-        return $this->controller ?? '';
+        return $this->handler;
     }
 
-    public function getAction()
+    public function setHandler($handler)
     {
-        return $this->action ?? '';
-    }
-
-    public function setHandler(array $handler)
-    {
-        $controller = (strpos($handler[0], 'Controller') !== false) ? $handler[0] : 'ErrorController';
-        // todo: create ErrorController
-        $action = (strpos($handler[1], 'Action') !== false) ? $handler[1] : 'throwAction';
-        $this->controller = $controller;
-        $this->action = $action;
+        $this->handler = $handler;
+        //todo: add a fallback/error Controller
     }
 
     public function getParam($key)
@@ -86,17 +74,5 @@ class Request
     public function getAllParams()
     {
         return $this->params;
-    }
-
-    public function getCallable()
-    {
-        return $this->callable;
-    }
-
-    public function setCallable($callable)
-    {
-        if (is_callable($callable)) {
-            $this->callable = $callable;
-        }
     }
 }

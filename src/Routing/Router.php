@@ -3,6 +3,7 @@
 namespace Routing;
 
 use Http\Request;
+use Routing\RouteFactory;
 
 class Router
 {
@@ -26,23 +27,12 @@ class Router
         }
 
         $requestUri = $this->request->getRequestUri();
-        $handler = [];
         $routeMatch = '';
         foreach ($this->routes as $route) {
             if ($route->compare($requestUri)) {
                 $routeMatch = $route;
-                $handler = $route->handler ? $route->handler : $route->callable;
+                $this->request->setHandler($route->handler);
             }
-        }
-
-        // note: is_array is tested first because arrays with callable
-        // class/method combinations are also considered callables
-        if (!empty($handler) && is_array($handler)) {
-            $this->request->setHandler($handler);
-        } else if (is_callable($handler)) {
-            $this->request->setCallable($handler);
-        } else {
-            throw new \ErrorException('Passed callable cannot be processed.');
         }
 
         //todo (later): handle all types of urls
@@ -51,20 +41,31 @@ class Router
             throw new \ErrorException('No controller found - optimize this thrown error!', 404);
         } else {
             if (count($routeMatch->params) && key_exists('required', $routeMatch->params)) {
+                // Retrieve param list
                 $params = array_keys($routeMatch->params['required']);
+
+                // Get request uri and route to countercheck it with
                 $url = $this->request->getRequestUri();
                 $route = $routeMatch->routeWithParams;
+
+                // Set a limit variable
                 $limit = 0;
 
                 while ((false !== strpos($url, '/')) && $limit < 8) {
+                    // Trim leftmost slashes
                     $url = ltrim($url, '/');
                     $route = ltrim($route, '/');
+
+                    // Get one part of the route
                     $urlFragment = substr($url, 0, strpos($url, '/') ?: strlen($url));
                     $routeFragment = substr($route, 0, strpos($route, '/') ?: strlen($route));
 
+                    // If that fragment is a recognized param
                     if (in_array(ltrim($routeFragment, ':'), $params)) {
                         $paramName = ltrim($routeFragment, ':');
                         $paramRegex = $routeMatch->params['required'][$paramName];
+
+                        // Final regex check before setting the parameter
                         if (preg_match('~^' . $paramRegex . '$~', $urlFragment)) {
                             $this->request->setParam(
                                 $paramName,
@@ -73,6 +74,7 @@ class Router
                         }
                     }
 
+                    // Remove part from respective strings
                     $url = substr($url, strlen($urlFragment));
                     $route = substr($route, strlen($routeFragment));
                     $limit++;
@@ -81,34 +83,14 @@ class Router
         }
     }
 
-    public function createRegexPattern($pattern, $params)
-    {
-        if (!$pattern) {
-            // todo: throw an error
-        }
-
-        if (isset($params['required'])) {
-            foreach ($params['required'] as $name => $format) {
-                $signedName = ':' . $name;
-
-                if (false !== strpos($pattern, $signedName, 0)) {
-                    $pattern = str_replace($signedName, $format, $pattern);
-                }
-            }
-        }
-
-        return $pattern;
-    }
-
     public function addRoute($routeWithParams, $httpMethod, $handler, $params = [])
     {
-        $regexPattern = $this->createRegexPattern($routeWithParams, $params);
         foreach ($this->routes as $route) {
-            if ($route->regexPattern === $regexPattern || $route->routeWithParams === $routeWithParams) {
+            if ($route->routeWithParams === $routeWithParams) {
                 throw new \InvalidArgumentException('Route with path ' . $routeWithParams . ' already exists.');
             }
         }
-        $this->routes[] = $this->createRoute($regexPattern, $httpMethod, $handler, $params, $routeWithParams);
+        $this->routes[] = RouteFactory::create($routeWithParams, $httpMethod, $handler, $params);
     }
 
     public function get($pattern, $handler, $params = [])
@@ -119,11 +101,6 @@ class Router
     public function post($pattern, $handler, $params = [])
     {
         $this->addRoute($pattern, 'POST', $handler, $params);
-    }
-
-    public function createRoute($regexPattern, $httpMethod, $handler, $params = [], $routeWithParams)
-    {
-        return new Route($regexPattern, $httpMethod, $handler, $params, $routeWithParams);
     }
 
     public function getRequest()

@@ -35,7 +35,7 @@ class Dispatcher
             );
         }
     }
-    
+
     /**
      * Return a requested parameter
      * 

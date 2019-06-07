@@ -46,7 +46,7 @@ class Router
 
                 // Get request uri and route to countercheck it with
                 $url = $requestUri;
-                $route = $routeMatch->routeWithParams;
+                $route = $routeMatch->pattern;
 
                 // Set a limit variable
                 $limit = 0;
@@ -83,14 +83,14 @@ class Router
         }
     }
 
-    public function addRoute($routeWithParams, $httpMethod, $handler, $params = [])
+    public function addRoute($pattern, $httpMethod, $handler, $params = [])
     {
         foreach ($this->routes as $route) {
-            if ($route->routeWithParams === $routeWithParams) {
-                throw new \InvalidArgumentException('Route with path ' . $routeWithParams . ' already exists.');
+            if ($route->pattern === $pattern) {
+                throw new \InvalidArgumentException('Route with path ' . $pattern . ' already exists.');
             }
         }
-        $this->routes[] = RouteFactory::create($routeWithParams, $httpMethod, $handler, $params);
+        $this->routes[] = RouteFactory::create($pattern, $httpMethod, $handler, $params);
     }
 
     public function get($pattern, $handler, $params = [])

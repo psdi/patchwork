@@ -13,7 +13,7 @@ class Route
     /** @var mixed[] */
     public $params = [];
     /** @var string */
-    public $routeWithParams = '';
+    public $pattern = '';
 
     public function compare($pattern)
     {

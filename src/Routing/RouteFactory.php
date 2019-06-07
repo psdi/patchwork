@@ -10,7 +10,7 @@ class RouteFactory
     {
         $route = new Route();
 
-        $route->routeWithParams = $pattern;
+        $route->pattern = $pattern;
         $route->httpMethod = $httpMethod;
         $route->params = $params;
         $route->regexPattern = self::buildRegexPattern($pattern, $params);

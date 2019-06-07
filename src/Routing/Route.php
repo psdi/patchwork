@@ -4,34 +4,16 @@ namespace Routing;
 
 class Route
 {
+    /** @var string */
     public $regexPattern = '';
+    /** @var string */
     public $httpMethod = '';
-    public $callable = null;
+    /** @var callable|callable[]|\Closure */
     public $handler = [];
+    /** @var mixed[] */
     public $params = [];
+    /** @var string */
     public $routeWithParams = '';
-
-    /**
-     * Route constructor - accepts either a handler or an anonymous function
-     * 
-     * @var string $regexPattern
-     * @var string $httpMethod
-     * @var callable|array $handler
-     * @var array $params
-     * @var string $routeWithParams
-     */
-    public function __construct($regexPattern, $httpMethod, $handler, $params = [], $routeWithParams = '')
-    {
-        $this->regexPattern = $regexPattern;
-        $this->httpMethod = $httpMethod;
-        if (is_callable($handler)) {
-            $this->callable = $handler;
-        } else if (is_array($handler)) {
-            $this->handler = $handler;
-        }
-        $this->params = $params;    
-        $this->routeWithParams = $routeWithParams;
-    }
 
     public function compare($pattern)
     {

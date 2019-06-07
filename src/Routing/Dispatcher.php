@@ -19,23 +19,32 @@ class Dispatcher
 
     public function dispatch()
     {
-        if ($this->request->getCallable() !== null) {
-            // todo: run with parameters
-        } else if ($this->request->getController() && $this->request->getAction()) {
-            $controllerClass = $this->request->getController();
-            $action = $this->request->getAction();
-            $controller = new $controllerClass($this);
-            $params = $this->request->getAllParams();
-            call_user_func_array(
-                [
-                    $controller,
-                    $action
-                ],
-                $params
-            );
+        $handler = $this->request->getAttribute('handler');
+
+        if (!is_array($handler)) {
+            $handler = [$handler];
+        }
+
+        foreach ($handler as $h) {
+            if (is_string($h)) {
+                $this->runObjectMethod($h);
+            }
+            //todo: run callbacks/closures
         }
     }
-    
+
+    /**
+     * Run an object method
+     *
+     * @param $pair - e.g. 'class::method'
+     */
+    public function runObjectMethod($pair)
+    {
+        list($controllerClass, $action) = explode('::', $pair);
+        $controller = new $controllerClass($this->request);
+        call_user_func([$controller, $action]);
+    }
+
     /**
      * Return a requested parameter
      * 

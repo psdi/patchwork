@@ -4,18 +4,10 @@ namespace Http;
 
 class Request
 {
-    /** @var string $requestUri */
-    private $requestUri;
-    /** @var string $httpMethod */
-    private $httpMethod;
-    /** @var string $controller */
-    private $controller;
-    /** @var string $action */
-    private $action;
-    /** @var array $params */
+    /** @var mixed[] */
+    public $attributes = [];
+    /** @var mixed[] */
     private $params = [];
-    /** @var callable $callable */
-    private $callable = null;
 
     const SUPPORTED_METHODS = [
         'GET',
@@ -24,50 +16,26 @@ class Request
 
     public function __construct()
     {
-        $this->setHttpMethod($_SERVER['REQUEST_METHOD']);
-        $this->setRequestUri(rtrim($_SERVER['REQUEST_URI'], '/'));
-    }
-
-    public function getRequestUri()
-    {
-        return $this->requestUri ?? '';
-    }
-
-    protected function setRequestUri($requestUri)
-    {
-        $this->requestUri = $requestUri;
-    }
-
-    public function getHttpMethod()
-    {
-        return $this->httpMethod ?? '';
-    }
-
-    protected function setHttpMethod($httpMethod)
-    {
+        $httpMethod = $_SERVER['REQUEST_METHOD'];
         if (!in_array($httpMethod, self::SUPPORTED_METHODS)) {
             throw new \InvalidArgumentException('Unsupported HTTP request method ' . $httpMethod . ' was given.');
         }
-        $this->httpMethod = $httpMethod;
+        $this->setAttribute('httpMethod', $httpMethod);
+        $this->setAttribute('requestUri', rtrim($_SERVER['REQUEST_URI'], '/'));
     }
 
-    public function getController()
+    public function getAttribute($name)
     {
-        return $this->controller ?? '';
+        if (!isset($this->attributes[$name])) {
+            return false;
+        }
+        return $this->attributes[$name];
     }
 
-    public function getAction()
+    public function setAttribute($name, $value)
     {
-        return $this->action ?? '';
-    }
-
-    public function setHandler(array $handler)
-    {
-        $controller = (strpos($handler[0], 'Controller') !== false) ? $handler[0] : 'ErrorController';
-        // todo: create ErrorController
-        $action = (strpos($handler[1], 'Action') !== false) ? $handler[1] : 'throwAction';
-        $this->controller = $controller;
-        $this->action = $action;
+        $this->attributes[$name] = $value;
+        return $this;
     }
 
     public function getParam($key)
@@ -86,17 +54,5 @@ class Request
     public function getAllParams()
     {
         return $this->params;
-    }
-
-    public function getCallable()
-    {
-        return $this->callable;
-    }
-
-    public function setCallable($callable)
-    {
-        if (is_callable($callable)) {
-            $this->callable = $callable;
-        }
     }
 }

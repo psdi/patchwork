@@ -1,57 +1,20 @@
-# Patchwork-Framework
+# Patchwork
 
-This project is a conglomerate created by bundling interpretations of existing
-technologies. Although not apt for official project usage, this framework should
-allow implementation of common features that other, more superior frameworks
-already provide. Ultimately, it only serves learning purposes.
+The aim of this project is to emulate common features that other, more superior
+frameworks already provide. With that said, it is in no way suitable for usage
+in production.
 
-## Usage
+## Implemented Features
 
-### Autoloading
+- Logging (based on Katzgrau's [Logger](https://github.com/katzgrau/KLogger/blob/master/src/Logger.php)) class
+- Autoloading (taken and adapted from PHP FIG's [example](https://www.php-fig.org/psr/psr-4/examples/))
+- Routing (loosely inspired by Zend Expressive + Slim + FastRoute) (basically every routing framework there is 😅)
 
-In `src/autoload.php`, instantiate an `Autoloader` object with its single parameter, the path to the `src` folder.
+## To-do
 
-```php
-$frameworkPath = rtrim(dirname(__FILE__), DIRECTORY_SEPARATOR).'/';
-$loader = new Library\Autoloader($frameworkPath);
-```
+- MVC-conforming workflow, or perhaps RMR
+- Middleware support
+- Using interfaces and abstraction (e.g. for different types of requests)
+- Template Engine (not very sure about this)
 
-Loading namespace prefixes can be done in three ways. The easiest way to add a namespace-directory pair is by using the `addNamespace()` method, like so:
-
-```php
-$loader->addNamespace('Library', 'lib/');
-```
-
-A "map" (array) of namespaces can be registered at once with the help of `addNamespaceMap()`:
-
-```php
-$loader->addNamespaceMap([
-   'Library' => 'lib/',
-   'Routing' => 'routing/',
-]);
-```
-
-Last but not the least, a method based on Nikita Popov's routing system that allows group namespace addition:
-
-```php
-$loader->addNamespaceGroup('BlogPost', 'Object/', function (Library\Autoloader $a) {
-	'Interface' => 'Interface/',
-    'Object' => 'Object/',
-    'Request' => 'Request/',
-});
-```
-
-After that, register the autoload function using the `register` method.
-
-```php
-$loader->register();
-```
-
-
-
-At the end of the yet unknown project period, this *framework* should have the following features:
-
-- Logging
-- Autoloading
-- Routing: Controllers/Views
-- Template Engine
+Documentation coming soon!

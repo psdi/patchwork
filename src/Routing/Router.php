@@ -26,12 +26,12 @@ class Router
             throw new \ErrorException('No request object found.');
         }
 
-        $requestUri = $this->request->getRequestUri();
+        $requestUri = $this->request->getAttribute('requestUri');
         $routeMatch = '';
         foreach ($this->routes as $route) {
             if ($route->compare($requestUri)) {
                 $routeMatch = $route;
-                $this->request->setHandler($route->handler);
+                $this->request->setAttribute('handler', $route->handler);
             }
         }
 
@@ -45,7 +45,7 @@ class Router
                 $params = array_keys($routeMatch->params['required']);
 
                 // Get request uri and route to countercheck it with
-                $url = $this->request->getRequestUri();
+                $url = $requestUri;
                 $route = $routeMatch->routeWithParams;
 
                 // Set a limit variable

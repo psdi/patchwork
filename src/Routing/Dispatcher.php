@@ -19,7 +19,7 @@ class Dispatcher
 
     public function dispatch()
     {
-        $handler = $this->request->getHandler();
+        $handler = $this->request->getAttribute('handler');
 
         if (!is_array($handler)) {
             $handler = [$handler];
